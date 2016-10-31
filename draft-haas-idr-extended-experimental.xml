@@ -1,0 +1,320 @@
+<?xml version="1.0"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY RFC2119 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC4271 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4271.xml">
+<!ENTITY RFC5226 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5226.xml">
+<!ENTITY RFC6368 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6368.xml">
+<!ENTITY RFC7120 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7120.xml">
+<!ENTITY RFC7606 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7606.xml">
+<!ENTITY ATTR-ANNOUNCE SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-idr-bgp-attribute-announcement-00.xml">
+]>
+<?rfc comments="yes"?>
+<?rfc compact="yes"?>
+<?rfc inline="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc subcompact="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc toc="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc tocindent="yes"?>
+<?rfc tocompact="yes"?>
+
+
+<rfc category="std" docName="draft-haas-idr-extended-experimental-00">
+    <front>
+	<title>Extended Experimental Path Attributes for BGP</title>
+
+	<author fullname="Jeffrey Haas" initials="J." surname="Haas">
+	    <organization>Juniper Networks, Inc.</organization>
+	    <address>
+		<postal>
+		<street>1133 Innovation Way</street>
+		<city>Sunnyvale</city>
+		<region>CA</region>
+		<code>94089</code>
+		<country>US</country>
+		</postal>
+		<email>jhaas@juniper.net</email>
+	    </address>
+	</author>
+	<date month="October" year="2016" />
+
+	<abstract>
+	    <t>
+	    BGP's primary feature extension mechanism, Optional-Transitive
+	    Path Attributes, has proven to be a successful mechanism to
+	    permit BGP to be extended.  In order to ease various issues
+	    during the development of new BGP features, this document
+	    proposes an extended experimental path attribute to carry
+	    prototype features.
+	    </t>
+
+	</abstract>
+
+	<note title="Requirements Language">
+	    <t>
+	    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+	    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" are to
+	    be interpreted as described in <xref target="RFC2119" /> only when
+	    they appear in all upper case. They may also appear in lower or
+	    mixed case as English words, without normative meaning.
+	    </t>
+	</note>
+    </front>
+
+    <middle>
+	<section anchor="intro" title="Introduction">
+	    <t>
+	    BGP's <xref target="RFC4271"/> primary feature extension mechanism,
+	    Optional-Transitive Path Attributes, has proven to be a successful
+	    mechanism to permit BGP to be extended.  It permits implementations
+	    to propagate unknown Path Attributes without understanding their
+	    contents, so long as they are syntactically valid.
+	    </t>
+
+	    <t>
+	    Path Attributes are encoded in BGP UPDATE messages using a single
+	    octet.  While this code point space is relatively small, the rate at
+	    which new BGP features are introduced has proven to be slow enough
+	    that the potential for exhaustion is not a significant concern more
+	    than twenty years into the deployment of BGP-4.  This code point
+	    space is managed by IANA under the Standards Action policy 
+	    <xref target="RFC5226"/>, one of the more restrictive policies in
+	    IETF's repertoire.  Early allocation <xref target="RFC7120"/>
+	    provides some latitude for allocation of these code points compared
+	    to the original RFC 5226 policy, but is reserved for features that
+	    are considered appropriately stable.
+	    </t>
+
+	    <t>
+	    Development work on the BGP protocol often requires a code point be
+	    assigned to a feature in progress.  While code point 255 has been
+	    reserved to be Experimental, developers will often face collisions
+	    when attempting to do development on more than a single in-progress
+	    feature.  Once the feature has reached a level of stability, early
+	    allocation should be strongly pursued.  It may take some time,
+	    however, for features to reach that level of stability.
+	    </t>
+
+	    <t>
+	    Due to the general difficulty of getting a public code point during
+	    the development process, code point "squatting" (use of a code point
+	    that has not been officially allocated) is unfortunately common.  In
+	    many cases, this is done completely internally and has no impact on
+	    the Internet.  But sometimes accidents happen and pre-release
+	    features ship.  Prior to the deployment of the Revised BGP Error
+	    Handling Procedures <xref target="RFC7606"/>,
+	    this could often be disastrous as different features, or different
+	    versions of the same feature,  collided with each other and were
+	    interpreted as syntax errors and caused BGP peering sessions to
+	    reset per RFC 4271 error handling procedures.  While it is less
+	    disastrous for such collisions to happen in terms of stability of
+	    the Internet, what's needed is a way for BGP protocol development to
+	    proceed with a little more safety.
+	    </t>
+
+	    <t>
+	    This document proposes a new BGP Path Attribute, the BGP Extended
+	    Experimental Path Attribute.  This Attribute is intended to be used
+	    solely for BGP Protocol development and is not intended to replace
+	    the allocation policies for the BGP Protocol.
+	    </t>
+	</section>
+
+	<section title="Extended Experimental Path Attribute">
+	    <t>
+	    The Extended Experimental Path Attribute is an Optional-Transitive
+	    Path Attribute with a code of TBD.  Its contents are a series of
+	    TLVs in the following format:
+	    </t>
+
+	    <t>
+            <figure><artwork><![CDATA[
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |     Implementor IANA Private Enterprise Number (4 octets)     |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |       Implementor Feature Code Point Number (4 octets)        |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |   Version Number (2 octets)   |  Feature Length (2 octets)    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |               Feature Data (0 or more octets)                 |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            ]]></artwork></figure>
+	    </t>
+
+	    <t>
+	    <list style="symbols">
+		<t>Implementor IANA Private Enterprise Number is a Private
+		Enterprise Number (PEN) assigned by IANA.
+		<xref target="IANA-PEN"/></t>
+		<t>Feature Code Point Number is a code point space under the
+		control of the holder of the PEN.</t>
+		<t>Feature Version is unsigned number intended to convey the
+		version of the feature covered by the Feature Code Point Number
+		for the implementor.  Implementors are encouraged to
+		sequentially number versions of their feature beginning at
+		1.</t>
+		<t>Feature Length is the length of this TLV.  It MUST be at
+		least 12 octets.</t>
+		<t>Feature Data will be encoded as a BGP Path Attribute value
+		for the experimental feature.</t>
+	    </list>
+	    </t>
+	</section>
+
+	<section anchor="usage" title="Usage">
+	    <t>
+	    A BGP implementor intending to introduce a new standards oriented
+	    Path Attribute will select a code point number for their new
+	    Path Attribute and assign an initial Version Number.  Whenever the
+	    format of the feature needs to change, the Version Number MUST also
+	    change.  This prevents implementations understanding different
+	    versions of a pre-standards feature from improperly parsing the
+	    attribute.
+	    </t>
+
+	    <t>
+	    BGP Experimental features MUST require explicit configuration to
+	    recognize a specific Feature Code Point Number, for a given Version
+	    Number, for a given PEN.  If such configuration is not present, the
+	    TLV MUST be ignored.
+	    </t>
+
+	    <t>
+	    BGP Experimental features SHOULD NOT carry more than one Version
+	    Number of the same Feature Code Point in a given UPDATE.
+	    Implementations are encouraged to strip inconsistent Version
+	    Numbered TLVs for a given feature when appropriate.  For example, if
+	    the BGP speaker is configured to support Version Number 2 of an
+	    experimental feature, it may discard all TLVs for the Feature Code
+	    Point Number that are not 2.
+	    </t>
+
+	    <t>
+	    BGP implementations supporting the Extended Experimental Path
+	    Attribute SHOULD strip this attribute by default on external BGP
+	    sessions.  Explicit configuration SHOULD be required to permit a
+	    given PEN+FCPN+VN tuple into the network.
+	    </t>
+	</section>
+
+	<section title="Error Handling">
+	    <t>
+	    If the Extended Experimental Path Attribute is determined to be
+	    syntactically invalid, the Attribute discard behavior from 
+	    <xref target="RFC7606"/> MUST be used.
+	    </t>
+	</section>
+
+	<section title="Moving to an Allocated Code Point">
+	    <t>
+	    Once an evolving BGP protocol feature reaches a reasonable level of
+	    stability, implementations MUST move to a Path Attribute Code Point
+	    allocated using the IETF sanctioned procedures.  Implementors that
+	    publish their PEN+FCN+VN allocations for a given version of their
+	    feature in progress are recommended to publish this binding as part
+	    of their allocation request to enable short term backward
+	    compatibility with their experimental work.
+	    </t>
+
+	    <t>
+	    While it is possible for implementations of a new feature to rely on
+	    experimental deployment for some time, the procedures noted in 
+	    <xref target="usage"/>
+	    are intended to discourage this behavior by making inter-domain
+	    distribution of the experiment fail by default.
+	    </t>
+	</section>
+
+	<section title="Security Considerations">
+	    <t>
+	    This document does not introduce any new security considerations
+	    into the BGP-4 protocol.  While the injection of unknown or badly
+	    formatted Optional-Transitive Path Attributes has been and remains
+	    an issue impacting the stability of the Internet, this proposal
+	    doesn't increase exposure to that issue.  It is rather expected that
+	    this proposal helps remediate the accidental attack surface that
+	    incremental BGP protocol work exposes to the Internet at large.
+	    </t>
+	</section>
+
+	<section title="IANA Considerations">
+	    <t>
+	    This document is primarily about issues related to IANA
+	    Considerations.  At some point, IANA will be requested to assign a
+	    BGP Path Attribute Code number, referenced as TBD early in the
+	    document.
+	    </t>
+	</section>
+
+    </middle>
+
+    <back>
+	<references title="Normative References">
+	    &RFC2119;
+	    &RFC4271;
+	    &RFC7606;
+	    <reference anchor="IANA-PEN" target="http://pen.iana.org">
+		<front>
+		    <title>IANA Private Enterprise Number</title>
+		    <author/>
+		    <date/>
+		</front>
+	    </reference>
+
+	</references>
+	<references title="Informative References">
+	    &ATTR-ANNOUNCE;
+	    &RFC6368;
+	    &RFC5226;
+	    &RFC7120;
+	</references>
+
+	<section title="Comparisons to Other Features">
+	    <t>
+	    Astute readers will note that this is not the first time BGP Path
+	    Attributes have been "tunneled" inside of other Path Attributes.  
+	    <xref target="RFC6368"/> provided a mechanism by which an entire set
+	    of Path Attributes could be tunneled inside of attribute 128 for
+	    purposes of transparently passing received BGP Path Attributes in an
+	    Internet Layer 3 VPN context from one Customer Edge (CE) router to
+	    another.
+	    </t>
+
+	    <t>
+	    <xref target="RFC6368"/> suffered from two issues:
+		<list style="numbers">
+		<t>
+		    During its initial development, 4-byte AS numbers were
+		    starting to be deployed.  This lead to a change in the
+		    packet format of the feature to accommodate the 4-byte ASes
+		    instead of the previous 2-byte versions.
+		</t>
+		<t>
+		    While this feature was intended solely to be used in a VPN
+		    context, implementations that did not understand it
+		    similarly did not strip it.  This caused the VPN routes to
+		    carry attribute 128 in an Internet context after they were
+		    delivered to the target CE router.
+		</t>
+		</list>
+	    </t>
+
+	    <t>
+	    Due to these two issues, routes containing one version of this
+	    feature that "escaped into the wild" eventually to be received by
+	    other BGP speakers supporting a different version of the feature.
+	    Each version would treat their opposite's encoding as a syntax
+	    error.  This resulted in BGP peering sessions being reset.  This,
+	    and other similar issues, was a motivation for 
+	    <xref target="RFC6368"/>.
+	    </t>
+
+	    <t>
+	    The second issue noted above is the motivation for 
+	    <xref target="I-D.ietf-idr-bgp-attribute-announcement"/>.
+	    </t>
+	</section>
+    </back>
+</rfc>
