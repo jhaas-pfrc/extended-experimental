@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY RFC2042 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2042.xml">
 <!ENTITY RFC2119 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY RFC4271 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4271.xml">
 <!ENTITY RFC5226 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5226.xml">
@@ -20,7 +21,7 @@
 <?rfc tocompact="yes"?>
 
 
-<rfc category="std" docName="draft-haas-idr-extended-experimental-00">
+<rfc category="std" docName="draft-haas-idr-extended-experimental-01">
     <front>
 	<title>Extended Experimental Path Attributes for BGP</title>
 
@@ -37,7 +38,7 @@
 		<email>jhaas@juniper.net</email>
 	    </address>
 	</author>
-	<date month="October" year="2016" />
+	<date month="March" year="2017" />
 
 	<abstract>
 	    <t>
@@ -45,7 +46,7 @@
 	    Path Attributes, has proven to be a successful mechanism to
 	    permit BGP to be extended.  In order to ease various issues
 	    during the development of new BGP features, this document
-	    proposes an extended experimental path attribute to carry
+	    proposes an extended experimental Path Attribute to carry
 	    prototype features.
 	    </t>
 
@@ -74,26 +75,27 @@
 
 	    <t>
 	    Path Attributes are encoded in BGP UPDATE messages using a single
-	    octet.  While this code point space is relatively small, the rate at
-	    which new BGP features are introduced has proven to be slow enough
-	    that the potential for exhaustion is not a significant concern more
-	    than twenty years into the deployment of BGP-4.  This code point
-	    space is managed by IANA under the Standards Action policy 
-	    <xref target="RFC5226"/>, one of the more restrictive policies in
-	    IETF's repertoire.  Early allocation <xref target="RFC7120"/>
-	    provides some latitude for allocation of these code points compared
-	    to the original RFC 5226 policy, but is reserved for features that
-	    are considered appropriately stable.
+	    octet code-point.  While this code-point space is relatively small,
+	    the rate at which new BGP features are introduced has proven to be
+	    slow enough that the potential for exhaustion has not been a significant
+	    concern more than twenty years into the deployment of BGP-4.  This
+	    code point space is managed by IANA under the Standards Action
+	    policy <xref target="RFC5226"/>, one of the more restrictive
+	    policies in IETF's repertoire.  Early allocation 
+	    <xref target="RFC7120"/> provides some latitude for allocation of these
+	    code points compared to the original RFC 5226 policy, but is
+	    reserved for features that are considered appropriately stable.
 	    </t>
 
 	    <t>
 	    Development work on the BGP protocol often requires a code point be
 	    assigned to a feature in progress.  While code point 255 has been
-	    reserved to be Experimental, developers will often face collisions
-	    when attempting to do development on more than a single in-progress
-	    feature.  Once the feature has reached a level of stability, early
-	    allocation should be strongly pursued.  It may take some time,
-	    however, for features to reach that level of stability.
+	    reserved to be Experimental (<xref target="RFC2042"/>), developers
+	    will often face collisions when attempting to do development on
+	    more than a single in-progress feature.  Once the feature has
+	    reached a level of stability, early allocation should be strongly
+	    pursued.  It may take some time, however, for features to reach
+	    that level of stability.
 	    </t>
 
 	    <t>
@@ -150,13 +152,12 @@
 		<xref target="IANA-PEN"/></t>
 		<t>Feature Code Point Number is a code point space under the
 		control of the holder of the PEN.</t>
-		<t>Feature Version is unsigned number intended to convey the
+		<t>Version Number is an unsigned number intended to convey the
 		version of the feature covered by the Feature Code Point Number
 		for the implementor.  Implementors are encouraged to
 		sequentially number versions of their feature beginning at
 		1.</t>
-		<t>Feature Length is the length of this TLV.  It MUST be at
-		least 12 octets.</t>
+		<t>Feature Length is the length of the Feature Data.</t>
 		<t>Feature Data will be encoded as a BGP Path Attribute value
 		for the experimental feature.</t>
 	    </list>
@@ -237,6 +238,12 @@
 	    this proposal helps remediate the accidental attack surface that
 	    incremental BGP protocol work exposes to the Internet at large.
 	    </t>
+
+	    <t>
+	    <xref target="RFC7606"/> has mitigated the majority of the
+	    issues mentioned in the prior paragraph.  See that RFC for
+	    further information on the history of the problem.
+	    </t>
 	</section>
 
 	<section title="IANA Considerations">
@@ -252,6 +259,7 @@
 
     <back>
 	<references title="Normative References">
+	    &RFC2042;
 	    &RFC2119;
 	    &RFC4271;
 	    &RFC7606;
@@ -269,6 +277,24 @@
 	    &RFC6368;
 	    &RFC5226;
 	    &RFC7120;
+	    <reference anchor="ietf-97-idr-extended-experimental-path-attribute-slides" target="https://www.ietf.org/proceedings/97/slides/slides-97-idr-extended-experimental-path-attributes-00.pdf">
+	        <front>
+	            <title>Extended Experimental Path Attributes - IETF 97 Slides</title>
+	            <author fullname="Jeffrey Haas" initials="J." surname="Haas">
+		        <organization>Juniper Networks, Inc.</organization>
+		    </author>
+		    <date month="November" year="2016"/>
+		</front>
+	    </reference>
+	    <reference anchor="ietf-97-idr-code-point-management-slides" target="https://www.ietf.org/proceedings/97/slides/slides-97-idr-code-point-management-02.pdf">
+	        <front>
+	            <title>Code Point Management - IETF 97 Slides</title>
+	            <author fullname="Jeffrey Haas" initials="J." surname="Haas">
+		        <organization>Juniper Networks, Inc.</organization>
+		    </author>
+		    <date month="November" year="2016"/>
+		</front>
+	    </reference>
 	</references>
 
 	<section title="Comparisons to Other Features">
@@ -314,6 +340,55 @@
 	    <t>
 	    The second issue noted above is the motivation for 
 	    <xref target="I-D.ietf-idr-bgp-attribute-announcement"/>.
+	    </t>
+	</section>
+
+	<section title="Discussion to this Date">
+	    <t>
+	    This proposal was originally well-received on the IDR mailing
+	    list and during its presentation at IETF.  Comments included
+	    comparison to existing mechanisms in LDP and IS-IS; Hannes
+	    Gredler notes that the IS-IS feature is not used.
+	    </t>
+
+	    <t>
+	    Another set of comments revolved around the structured format of
+	    the PEN+FCN+VN and "why couldn't we simply have a very large
+	    first-come, first-served code space".  While the author agrees
+	    that this would serve a very similar behavior, the author's
+	    belief after further consideration is that:
+
+	    	<list style="symbols">
+		<t>Involving IANA, even when the process is very light
+		weight, is part of our existing issue.  The Enterprise
+		numbering space permits completely internal management
+		during development of new features.</t>
+		<t>There is no fundamental "burden" of multiple implementors
+		rendezvousing around a common PEN+FCN+VN during
+		interoperability testing.  The motivation after such testing
+		should be to request a valid BGP Path Attribute code point
+		using existing IETF procedures.</t>
+		</list>
+	    </t>
+
+	    <t>
+	    Another comment was about the possibility of utilizing this
+	    mechanism as a long-term private BGP Path Attribute feature.
+	    Such behavior may be a valid use case, however, there remains a
+	    need to provide for automatic filtering of experimental work.
+	    </t>
+
+	    <t>
+	    This brings the final comment that both this new Path Attribute
+	    and potentially each of the experiments in the Feature Data
+	    should be covered by 
+	    <xref target="I-D.ietf-idr-bgp-attribute-announcement"/>
+	    or something similar. This would include additional procedure to
+	    provide for remote filtering of the TLVs defined in this
+	    document.  Progressing this document, and the use case of long
+	    term private Path Attributes as noted in the prior section,
+	    should be considered after the attribute-announcement draft
+	    receives further feedback.
 	    </t>
 	</section>
     </back>

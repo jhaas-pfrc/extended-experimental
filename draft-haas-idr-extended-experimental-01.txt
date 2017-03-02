@@ -4,12 +4,12 @@
 
 Network Working Group                                            J. Haas
 Internet-Draft                                    Juniper Networks, Inc.
-Intended status: Standards Track                        October 30, 2016
-Expires: May 3, 2017
+Intended status: Standards Track                           March 1, 2017
+Expires: September 2, 2017
 
 
              Extended Experimental Path Attributes for BGP
-                draft-haas-idr-extended-experimental-00
+                draft-haas-idr-extended-experimental-01
 
 Abstract
 
@@ -17,7 +17,7 @@ Abstract
    Attributes, has proven to be a successful mechanism to permit BGP to
    be extended.  In order to ease various issues during the development
    of new BGP features, this document proposes an extended experimental
-   path attribute to carry prototype features.
+   Path Attribute to carry prototype features.
 
 Requirements Language
 
@@ -42,20 +42,20 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on May 3, 2017.
+   This Internet-Draft will expire on September 2, 2017.
 
 Copyright Notice
 
-   Copyright (c) 2016 IETF Trust and the persons identified as the
+   Copyright (c) 2017 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
 
 
 
 
-Haas                       Expires May 3, 2017                  [Page 1]
+Haas                    Expires September 2, 2017               [Page 1]
 
-Internet-DraftExtended Experimental Path Attributes for BGP October 2016
+Internet-DraftExtended Experimental Path Attributes for BGP   March 2017
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -81,7 +81,8 @@ Table of Contents
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
      8.2.  Informative References  . . . . . . . . . . . . . . . . .   6
    Appendix A.  Comparisons to Other Features  . . . . . . . . . . .   6
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   7
+   Appendix B.  Discussion to this Date  . . . . . . . . . . . . . .   7
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
 
@@ -92,31 +93,32 @@ Table of Contents
    contents, so long as they are syntactically valid.
 
    Path Attributes are encoded in BGP UPDATE messages using a single
-   octet.  While this code point space is relatively small, the rate at
-   which new BGP features are introduced has proven to be slow enough
-   that the potential for exhaustion is not a significant concern more
-   than twenty years into the deployment of BGP-4.  This code point
-   space is managed by IANA under the Standards Action policy [RFC5226],
-   one of the more restrictive policies in IETF's repertoire.  Early
-   allocation [RFC7120] provides some latitude for allocation of these
-   code points compared to the original RFC 5226 policy, but is reserved
-   for features that are considered appropriately stable.
+   octet code-point.  While this code-point space is relatively small,
+   the rate at which new BGP features are introduced has proven to be
+   slow enough that the potential for exhaustion has not been a
+   significant concern more than twenty years into the deployment of
+   BGP-4.  This code point space is managed by IANA under the Standards
+   Action policy [RFC5226], one of the more restrictive policies in
+   IETF's repertoire.  Early allocation [RFC7120] provides some latitude
+   for allocation of these code points compared to the original RFC 5226
+   policy, but is reserved for features that are considered
+   appropriately stable.
 
    Development work on the BGP protocol often requires a code point be
    assigned to a feature in progress.  While code point 255 has been
-   reserved to be Experimental, developers will often face collisions
-   when attempting to do development on more than a single in-progress
 
 
 
-Haas                       Expires May 3, 2017                  [Page 2]
+Haas                    Expires September 2, 2017               [Page 2]
 
-Internet-DraftExtended Experimental Path Attributes for BGP October 2016
+Internet-DraftExtended Experimental Path Attributes for BGP   March 2017
 
 
-   feature.  Once the feature has reached a level of stability, early
-   allocation should be strongly pursued.  It may take some time,
-   however, for features to reach that level of stability.
+   reserved to be Experimental ([RFC2042]), developers will often face
+   collisions when attempting to do development on more than a single
+   in-progress feature.  Once the feature has reached a level of
+   stability, early allocation should be strongly pursued.  It may take
+   some time, however, for features to reach that level of stability.
 
    Due to the general difficulty of getting a public code point during
    the development process, code point "squatting" (use of a code point
@@ -158,20 +160,19 @@ Internet-DraftExtended Experimental Path Attributes for BGP October 2016
       Number (PEN) assigned by IANA.  [IANA-PEN]
    o  Feature Code Point Number is a code point space under the control
       of the holder of the PEN.
-   o  Feature Version is unsigned number intended to convey the version
-      of the feature covered by the Feature Code Point Number for the
-      implementor.  Implementors are encouraged to sequentially number
-      versions of their feature beginning at 1.
+   o  Version Number is an unsigned number intended to convey the
+      version of the feature covered by the Feature Code Point Number
 
 
 
-Haas                       Expires May 3, 2017                  [Page 3]
+Haas                    Expires September 2, 2017               [Page 3]
 
-Internet-DraftExtended Experimental Path Attributes for BGP October 2016
+Internet-DraftExtended Experimental Path Attributes for BGP   March 2017
 
 
-   o  Feature Length is the length of this TLV.  It MUST be at least 12
-      octets.
+      for the implementor.  Implementors are encouraged to sequentially
+      number versions of their feature beginning at 1.
+   o  Feature Length is the length of the Feature Data.
    o  Feature Data will be encoded as a BGP Path Attribute value for the
       experimental feature.
 
@@ -220,10 +221,9 @@ Internet-DraftExtended Experimental Path Attributes for BGP October 2016
 
 
 
-
-Haas                       Expires May 3, 2017                  [Page 4]
+Haas                    Expires September 2, 2017               [Page 4]
 
-Internet-DraftExtended Experimental Path Attributes for BGP October 2016
+Internet-DraftExtended Experimental Path Attributes for BGP   March 2017
 
 
    While it is possible for implementations of a new feature to rely on
@@ -241,6 +241,10 @@ Internet-DraftExtended Experimental Path Attributes for BGP October 2016
    proposal helps remediate the accidental attack surface that
    incremental BGP protocol work exposes to the Internet at large.
 
+   [RFC7606] has mitigated the majority of the issues mentioned in the
+   prior paragraph.  See that RFC for further information on the history
+   of the problem.
+
 7.  IANA Considerations
 
    This document is primarily about issues related to IANA
@@ -255,6 +259,10 @@ Internet-DraftExtended Experimental Path Attributes for BGP October 2016
    [IANA-PEN]
               "IANA Private Enterprise Number", <http://pen.iana.org>.
 
+   [RFC2042]  Manning, B., "Registering New BGP Attribute Types",
+              RFC 2042, DOI 10.17487/RFC2042, January 1997,
+              <http://www.rfc-editor.org/info/rfc2042>.
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
@@ -265,22 +273,19 @@ Internet-DraftExtended Experimental Path Attributes for BGP October 2016
               DOI 10.17487/RFC4271, January 2006,
               <http://www.rfc-editor.org/info/rfc4271>.
 
+
+
+
+
+Haas                    Expires September 2, 2017               [Page 5]
+
+Internet-DraftExtended Experimental Path Attributes for BGP   March 2017
+
+
    [RFC7606]  Chen, E., Ed., Scudder, J., Ed., Mohapatra, P., and K.
               Patel, "Revised Error Handling for BGP UPDATE Messages",
               RFC 7606, DOI 10.17487/RFC7606, August 2015,
               <http://www.rfc-editor.org/info/rfc7606>.
-
-
-
-
-
-
-
-
-Haas                       Expires May 3, 2017                  [Page 5]
-
-Internet-DraftExtended Experimental Path Attributes for BGP October 2016
-
 
 8.2.  Informative References
 
@@ -289,6 +294,18 @@ Internet-DraftExtended Experimental Path Attributes for BGP October 2016
               J. Haas, "Constrain Attribute announcement within BGP",
               draft-ietf-idr-bgp-attribute-announcement-00 (work in
               progress), July 2016.
+
+   [ietf-97-idr-code-point-management-slides]
+              Haas, J., "Code Point Management - IETF 97 Slides",
+              November 2016,
+              <https://www.ietf.org/proceedings/97/slides/slides-97-idr-
+              code-point-management-02.pdf>.
+
+   [ietf-97-idr-extended-experimental-path-attribute-slides]
+              Haas, J., "Extended Experimental Path Attributes - IETF 97
+              Slides", November 2016,
+              <https://www.ietf.org/proceedings/97/slides/slides-97-idr-
+              extended-experimental-path-attributes-00.pdf>.
 
    [RFC5226]  Narten, T. and H. Alvestrand, "Guidelines for Writing an
               IANA Considerations Section in RFCs", BCP 26, RFC 5226,
@@ -314,6 +331,13 @@ Appendix A.  Comparisons to Other Features
    transparently passing received BGP Path Attributes in an Internet
    Layer 3 VPN context from one Customer Edge (CE) router to another.
 
+
+
+Haas                    Expires September 2, 2017               [Page 6]
+
+Internet-DraftExtended Experimental Path Attributes for BGP   March 2017
+
+
    [RFC6368] suffered from two issues:
 
    1.  During its initial development, 4-byte AS numbers were starting
@@ -330,19 +354,57 @@ Appendix A.  Comparisons to Other Features
    feature that "escaped into the wild" eventually to be received by
    other BGP speakers supporting a different version of the feature.
    Each version would treat their opposite's encoding as a syntax error.
-
-
-
-Haas                       Expires May 3, 2017                  [Page 6]
-
-Internet-DraftExtended Experimental Path Attributes for BGP October 2016
-
-
    This resulted in BGP peering sessions being reset.  This, and other
    similar issues, was a motivation for [RFC6368].
 
    The second issue noted above is the motivation for
    [I-D.ietf-idr-bgp-attribute-announcement].
+
+Appendix B.  Discussion to this Date
+
+   This proposal was originally well-received on the IDR mailing list
+   and during its presentation at IETF.  Comments included comparison to
+   existing mechanisms in LDP and IS-IS; Hannes Gredler notes that the
+   IS-IS feature is not used.
+
+   Another set of comments revolved around the structured format of the
+   PEN+FCN+VN and "why couldn't we simply have a very large first-come,
+   first-served code space".  While the author agrees that this would
+   serve a very similar behavior, the author's belief after further
+   consideration is that:
+
+   o  Involving IANA, even when the process is very light weight, is
+      part of our existing issue.  The Enterprise numbering space
+      permits completely internal management during development of new
+      features.
+   o  There is no fundamental "burden" of multiple implementors
+      rendezvousing around a common PEN+FCN+VN during interoperability
+      testing.  The motivation after such testing should be to request a
+      valid BGP Path Attribute code point using existing IETF
+      procedures.
+
+   Another comment was about the possibility of utilizing this mechanism
+   as a long-term private BGP Path Attribute feature.  Such behavior may
+
+
+
+
+Haas                    Expires September 2, 2017               [Page 7]
+
+Internet-DraftExtended Experimental Path Attributes for BGP   March 2017
+
+
+   be a valid use case, however, there remains a need to provide for
+   automatic filtering of experimental work.
+
+   This brings the final comment that both this new Path Attribute and
+   potentially each of the experiments in the Feature Data should be
+   covered by [I-D.ietf-idr-bgp-attribute-announcement] or something
+   similar.  This would include additional procedure to provide for
+   remote filtering of the TLVs defined in this document.  Progressing
+   this document, and the use case of long term private Path Attributes
+   as noted in the prior section, should be considered after the
+   attribute-announcement draft receives further feedback.
 
 Author's Address
 
@@ -383,10 +445,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-Haas                       Expires May 3, 2017                  [Page 7]
+Haas                    Expires September 2, 2017               [Page 8]
